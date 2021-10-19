@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Travler</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error">ERROR</string>
+    <string name="verify_your_email">VERIFY YOUR EMAIL</string>
+    <string name="updated">UPDATED</string>
+    <string name="we_have_sent_verification_link">We have sent verification link on your mail address.</string>
+    <string name="your_record_deleted">You record has been deleted.</string>
+    <string name="creating_account">Creating Account…</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_email_address">Enter Email Address</string>
+    <string name="enter_full_name">Enter Full Name</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="choose_profile_pic">Choose Profile Pic</string>
+    <string name="loading">Loading…</string>
+
+    <string name="token_format_incorrect">The custom token format is incorrect. Please check the documentation.</string>
+    <string name="supploed_auth_credntial_malformed">The supplied auth credential is malformed or has expired.</string>
+    <string name="email_address_is_badly">The email address is badly formatted.</string>
+    <string name="password_is_invalid">The password is invalid or the user does not have a password.</string>
+    <string name="previously_singed_in_user">The supplied credentials do not correspond to the previously signed in user.</string>
+    <string name="login_again_before_retrying">This operation is sensitive and requires recent authentication. Log in again before retrying this request.</string>
+    <string name="account_already_exist">An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.</string>
+    <string name="email_already_in_use_another_account">The email address is already in use by another account.</string>
+    <string name="credential_already_associated">This credential is already associated with a different user account.</string>
+    <string name="account_has_been_disabled">The user account has been disabled by an administrator.</string>
+    <string name="credential_is_no_longer_valid">The user\\\'s credential is no longer valid. The user must sign in again.</string>
+    <string name="no_record_corresponding">There is no user record corresponding to this identifier. The user may have been deleted.</string>
+    <string name="given_passoword_invalid">The given password is invalid.</string>
+</resources>

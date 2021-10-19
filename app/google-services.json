@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "365705474038",
+    "project_id": "travlr-61577",
+    "storage_bucket": "travlr-61577.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365705474038:android:f128d64b795c2a157161d7",
+        "android_client_info": {
+          "package_name": "in.softment.travler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365705474038-4jtc7k44des8b0gei91if1u4ksrfdpst.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDANTx0TG0L1kK3KcsjHk29Kf18mfnpy5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365705474038-4jtc7k44des8b0gei91if1u4ksrfdpst.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "365705474038-0fm1fubpf5rqa63vl1kh1i1r41ktvggo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "in.softment.travlr"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

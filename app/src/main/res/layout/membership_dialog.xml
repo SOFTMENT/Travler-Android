@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/membershipSheet"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_width="77dp"
+        android:layout_height="2dp"
+        android:background="@drawable/corner_radius_12"
+        android:backgroundTint="@color/dark_gray"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        />
+
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/crown_yellow"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="24dp"
+        android:text="Upgrade To Premium"
+        android:fontFamily="@font/rubik_bold"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        />
+    <TextView
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:text="Access to all training categories content."
+        android:fontFamily="@font/rubik_medium"
+        android:textSize="13sp"
+        android:textColor="@color/gray"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+        android:textAllCaps="false"
+        android:fontFamily="@font/rubik_medium"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_radius_4"
+        android:backgroundTint="@color/red_main"
+        android:text="A$ 10.0 / Month"
+        android:id="@+id/payBtn"
+        />
+    <TextView
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:text="Subscription will automatically renew unless auto-renew is turned off from google payment at least 24 hours before the end of the current period.Your account will be charged for renewal."
+        android:fontFamily="@font/rubik_medium"
+        android:textSize="13sp"
+        android:textColor="@color/gray"
+        android:textAlignment="center"
+        />
+
+    <LinearLayout
+        android:layout_marginBottom="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        >
+        <TextView
+
+            android:id="@+id/termsOfUse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Terms Of Use"
+            android:fontFamily="@font/rubik_medium"
+            android:textSize="12sp"
+            android:textColor="#1982D6"
+            />
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="  |  "
+            android:fontFamily="@font/rubik_medium"
+            android:textSize="12sp"
+            android:textColor="@color/dark_gray"
+            />
+
+        <TextView
+
+            android:id="@+id/privacyPolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Privacy Policy"
+            android:fontFamily="@font/rubik_medium"
+            android:textSize="12sp"
+            android:textColor="#1982D6"
+            />
+    </LinearLayout>
+</LinearLayout>
