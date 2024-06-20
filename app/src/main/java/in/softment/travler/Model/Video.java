@@ -10,6 +10,7 @@ public class Video {
     public String videoLink = "";
     public String pdfLink = "";
     public String type = "";
+
     Date date = new Date();
 
     public Video(){
@@ -71,4 +72,6 @@ public class Video {
     public void setDate(Date date) {
         this.date = date;
     }
+
+
 }

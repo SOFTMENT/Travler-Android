@@ -8,9 +8,26 @@ public class Category {
     public String desc = "";
     public int totalVideos = 0;
     public String type = "";
-
+    public boolean isCatFree = false;
+    public boolean isPremium = false;
     public  Category(){
 
+    }
+
+    public boolean isPremium() {
+        return isPremium;
+    }
+
+    public void setPremium(boolean premium) {
+        isPremium = premium;
+    }
+
+    public boolean isCatFree() {
+        return isCatFree;
+    }
+
+    public void setCatFree(boolean catFree) {
+        isCatFree = catFree;
     }
 
     public String getTitle() {

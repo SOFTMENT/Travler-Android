@@ -14,6 +14,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,8 +23,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +49,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -67,6 +72,7 @@ import java.util.List;
 import java.util.Map;
 
 import in.softment.travler.Adapters.CategoriesAdapter;
+import in.softment.travler.AllVideosViewController;
 import in.softment.travler.BuildConfig;
 import in.softment.travler.MainActivity;
 import in.softment.travler.Model.Category;
@@ -81,17 +87,27 @@ import in.softment.travler.Utils.Services;
 public class WorkoutFragment extends Fragment implements PurchasesUpdatedListener {
     private RecyclerView recyclerView;
     private CategoriesAdapter categoriesAdapter;
-    private Context context;
     private ArrayList<Category> categories;
     private BottomSheetDialog sheetDialog;
     private BottomSheetDialog membershipDialog;
     private BillingClient billingClient;
     public static final String PREF_FILE= "MyPref";
     public static final String SUBSCRIBE_KEY= "subscribe";
-    public static final String ITEM_SKU_SUBSCRIBE= "travler_premium_sub";
+    public static final String ITEM_SKU_SUBSCRIBE_NORMAL = "travler_premium_sub";
+    public static final String ITEM_SKU_SUBSCRIBE_EXCITE = "premium_excite";
+    public static final String ITEM_SKU_SUBSCRIBE_PREMIUM = "travelr_aus_premium";
+    private CardView premiumView;
+    private TextView premium_title, premium_desc, premium_available;
+    private ImageView premium_image;
+    private String selectedType = "";
+
+
+    public Context context;
+
     public WorkoutFragment(Context context) {
-      this.context = context;
+        this.context = context;
     }
+
     public WorkoutFragment(){
 
     }
@@ -102,10 +118,17 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
         View view = inflater.inflate(R.layout.fragment_workout, container, false);
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         categories = new ArrayList<>();
         categoriesAdapter = new CategoriesAdapter(context, categories);
         recyclerView.setAdapter(categoriesAdapter);
+
+        //PREMIUM
+        premiumView = view.findViewById(R.id.premiumView);
+        premium_title = view.findViewById(R.id.premium_title);
+        premium_desc = view.findViewById(R.id.premium_desc);
+        premium_available = view.findViewById(R.id.premium_available);
+        premium_image = view.findViewById(R.id.premium_image);
 
         if (!UserModel.data.subscription_id.isEmpty()) {
             checkStripeSubscriptionStatus(UserModel.data.getSubscription_id());
@@ -115,8 +138,8 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
         view.findViewById(R.id.membership).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sheetDialog = new BottomSheetDialog(context, R.style.BottomSheetStyle);
-                View view1 = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_dialog,(LinearLayout)view.findViewById(R.id.sheet));
+                sheetDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetStyle);
+                View view1 = LayoutInflater.from(getContext()).inflate(R.layout.bottom_sheet_dialog,(LinearLayout)view.findViewById(R.id.sheet));
 
                 TextView name = view1.findViewById(R.id.name);
                 TextView email = view1.findViewById(R.id.email);
@@ -126,18 +149,12 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                 TextView accountType = view1.findViewById(R.id.accountType);
                 name.setText(UserModel.data.name);
                 email.setText(UserModel.data.email);
+                TextView unsubscribe =  view1.findViewById(R.id.unsubscribe);
 
 
+                if (getSubscribeValueFromPref() || (UserModel.data.expireDate.compareTo(Constants.currentDate) > 0 && UserModel.data.subscription_status.equalsIgnoreCase("active"))){
 
-                if (getSubscribeValueFromPref() || (UserModel.data.expireDate.compareTo(Constants.currentDate) > 0)){
-
-
-                    Log.d("SOFTMENT22",UserModel.data.getExpireDate().getTime()+"");
-
-                    Log.d("SOFTMENT2222",Constants.currentDate+"");
                     long diff = UserModel.data.expireDate.getTime() - Constants.currentDate.getTime();
-
-                    Log.d("SOFTMENT2222232",diff+"");
                     int numOfDays = (int) (diff / (1000 * 60 * 60 * 24));
                     if (numOfDays > 1) {
                         goPremiumText.setText((numOfDays + 1) +" Days left");
@@ -146,44 +163,127 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                         goPremiumText.setText((numOfDays + 1)+" Day left");
                     }
 
-                    accountType.setText("Premium");
+                    switch (Constants.membershipType) {
+                        case "normal":
+                            accountType.setText("AUS NORMAL");
+                            break;
+                        case "excite":
+                            accountType.setText("AUS EXCITE");
+                            break;
+                        case "premium":
+                            accountType.setText("AUS PREMIUM");
+                            break;
+                    }
+
                     lock.setImageResource(R.drawable.crown_yellow);
                     goPremiumImg.setImageResource(R.drawable.clock);
 
+                    unsubscribe.setVisibility(View.VISIBLE);
+                    unsubscribe.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse("https://play.google.com/store/account/subscriptions"));
+                            startActivity(browserIntent);
+
+                        }
+                    });
+
 
                 }
+
                 else {
+
+                    unsubscribe.setVisibility(View.GONE);
+
                     view1.findViewById(R.id.goPremium).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            membershipDialog = new BottomSheetDialog(context, R.style.BottomSheetStyle);
-                            View view2 = LayoutInflater.from(context).inflate(R.layout.membership_dialog,(LinearLayout)view.findViewById(R.id.membershipSheet));
+
+                            membershipDialog = new BottomSheetDialog(getContext(), R.style.BottomSheetStyle);
+                            View view2 = LayoutInflater.from(getContext()).inflate(R.layout.membership_dialog,(LinearLayout)view.findViewById(R.id.membershipSheet));
+                            CheckBox normal_checkbox = view2.findViewById(R.id.normal_check);
+                            CheckBox excite_checkbox = view2.findViewById(R.id.excite_check);
+                            CheckBox premium_checkbox = view2.findViewById(R.id.premium_check);
+
+                            normal_checkbox.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    selectedType = "normal";
+                                    normal_checkbox.setChecked(true);
+                                    excite_checkbox.setChecked(false);
+                                    premium_checkbox.setChecked(false);
+                                }
+                            });
+
+                            excite_checkbox.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    selectedType = "excite";
+                                    normal_checkbox.setChecked(false);
+                                    excite_checkbox.setChecked(true);
+                                    premium_checkbox.setChecked(false);
+                                }
+                            });
+
+                            premium_checkbox.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    selectedType = "premium";
+                                    normal_checkbox.setChecked(false);
+                                    excite_checkbox.setChecked(false);
+                                    premium_checkbox.setChecked(true);
+                                }
+                            });
+
+
+
                             view2.findViewById(R.id.payBtn).setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    membershipDialog.dismiss();
-                                    if (billingClient.isReady()) {
-                                        initiatePurchase();
+                                    if (selectedType.isEmpty()) {
+                                        Services.showCenterToast(context,"Choose Type");
                                     }
-                                    //else reconnect service
-                                    else{
-                                        billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(WorkoutFragment.this).build();
-                                        billingClient.startConnection(new BillingClientStateListener() {
-                                            @Override
-                                            public void onBillingSetupFinished(BillingResult billingResult) {
-                                                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                                                    initiatePurchase();
-                                                } else {
-                                                    Toast.makeText(context,"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+                                    else {
+                                        membershipDialog.dismiss();
+                                        String sku = "";
+                                        switch (selectedType) {
+                                            case "normal":
+                                                sku = ITEM_SKU_SUBSCRIBE_NORMAL;
+                                                break;
+                                            case "excite":
+                                                sku = ITEM_SKU_SUBSCRIBE_EXCITE;
+                                                break;
+                                            case "premium":
+                                                sku = ITEM_SKU_SUBSCRIBE_PREMIUM;
+                                                break;
+                                        }
+
+                                        if (billingClient.isReady()) {
+                                            initiatePurchase(sku);
+                                        }
+                                        //else reconnect service
+                                        else{
+                                            billingClient = BillingClient.newBuilder(getContext()).enablePendingPurchases().setListener(WorkoutFragment.this).build();
+                                            String finalSku = sku;
+                                            billingClient.startConnection(new BillingClientStateListener() {
+                                                @Override
+                                                public void onBillingSetupFinished(BillingResult billingResult) {
+                                                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                                        initiatePurchase(finalSku);
+                                                    } else {
+                                                        Toast.makeText(getContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
-                                            }
-                                            @Override
-                                            public void onBillingServiceDisconnected() {
-                                                Toast.makeText(context,"Service Disconnected ",Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                                @Override
+                                                public void onBillingServiceDisconnected() {
+                                                    Toast.makeText(getContext(),"Service Disconnected ",Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
                                     }
-                                }
+                                    }
+
                             });
                             membershipDialog.setContentView(view2);
                             membershipDialog.show();
@@ -206,7 +306,7 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                         try {
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.setType("text/plain");
-                            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Travler");
+                            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Travelr");
                             String shareMessage= "\nLet me recommend you this application\n\n";
                             shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n";
                             shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
@@ -221,12 +321,12 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                 view1.findViewById(R.id.rateUsOnAppStore).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Uri uri = Uri.parse("market://details?id=" + context.getPackageName());
+                        Uri uri = Uri.parse("market://details?id=" + getContext().getPackageName());
                         Intent myAppLinkToMarket = new Intent(Intent.ACTION_VIEW, uri);
                         try {
                             startActivity(myAppLinkToMarket);
                         } catch (ActivityNotFoundException e) {
-                            Toast.makeText(context, " unable to find market app", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), " unable to find market app", Toast.LENGTH_LONG).show();
                         }
 
                         sheetDialog.dismiss();
@@ -246,14 +346,14 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                 view1.findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context,R.style.AlertDialogTheme);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.AlertDialogTheme);
 
                         builder.setTitle("Logout");
                         builder.setMessage("Are you sure you want to logout?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Services.logout(context);
+                                Services.logout(getContext());
                             }
                         });
 
@@ -278,7 +378,7 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
         });
 
 
-        billingClient = BillingClient.newBuilder(context).enablePendingPurchases().setListener(this).build();
+        billingClient = BillingClient.newBuilder(getContext()).enablePendingPurchases().setListener(this).build();
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(BillingResult billingResult) {
@@ -300,14 +400,14 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
 
             @Override
             public void onBillingServiceDisconnected() {
-                Toast.makeText(context,"Service Disconnected",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"Service Disconnected",Toast.LENGTH_SHORT).show();
             }
         });
 
 
 
 
-        ProgressHud.show(context,"Loading...");
+        ProgressHud.show(getContext(),"Loading...");
         StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://worldtimeapi.org/api/ip/",
                 new Response.Listener<String>() {
                     @Override
@@ -322,8 +422,6 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                         }
                         try {
                             Constants.currentDate = new Date(Long.parseLong(parentObject.getString("unixtime")) * 1000);
-
-
                             getCategoryData();
                         } catch (JSONException e) {
                             getCategoryData();
@@ -345,7 +443,7 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
 
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(stringRequest);
 
 
@@ -357,9 +455,9 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
 
 
 
-    private void initiatePurchase() {
+    private void initiatePurchase(String item_sku) {
         List<String> skuList = new ArrayList<>();
-        skuList.add(ITEM_SKU_SUBSCRIBE);
+        skuList.add(item_sku);
         SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
         params.setSkusList(skuList).setType(SUBS);
         BillingResult billingResult = billingClient.isFeatureSupported(BillingClient.FeatureType.SUBSCRIPTIONS);
@@ -374,19 +472,19 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                                     BillingFlowParams flowParams = BillingFlowParams.newBuilder()
                                             .setSkuDetails(skuDetailsList.get(0))
                                             .build();
-                                    billingClient.launchBillingFlow((Activity) context, flowParams);
+                                    billingClient.launchBillingFlow((Activity) getContext(), flowParams);
                                 } else {
                                     //try to add subscription item "sub_example" in google play console
-                                    Toast.makeText(context, "Item not Found", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "Item not Found", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                Toast.makeText(context,
+                                Toast.makeText(getContext(),
                                         " Error " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
         }else{
-            Toast.makeText(context,
+            Toast.makeText(getContext(),
                     "Sorry Subscription not Supported. Please Update Play Store", Toast.LENGTH_SHORT).show();
         }
     }
@@ -397,17 +495,47 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                 ProgressHud.dialog.dismiss();
                 if (error == null) {
                     categories.clear();
+                    premiumView.setVisibility(View.GONE);
                     if (value != null && !value.isEmpty()) {
 
                         for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
                             Category category = documentSnapshot.toObject(Category.class);
-                            categories.add(category);
+                            if (category.isPremium()) {
+                              if (Constants.membershipType.equals("excite") || Constants.membershipType.equals("premium")) {
+                                   premiumView.setVisibility(View.VISIBLE);
+                                   premiumView.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View view) {
+                                           if (category.type.equalsIgnoreCase("pdf")) {
+                                               ((MainActivity)context).gotoPdfActivity(category.id,category.isCatFree);
+                                           }
+                                           else {
+                                               Intent intent = new Intent(context, AllVideosViewController.class);
+                                               intent.putExtra("cat_id",category.id);
+                                               intent.putExtra("title",category.title);
+                                               intent.putExtra("isCatFree",category.isCatFree);
+                                               context.startActivity(intent);
+                                           }
+                                       }
+                                   });
+                                   premium_title.setText(category.title);
+                                   premium_desc.setText(category.desc);
+                                   premium_available.setText("Available : "+category.totalVideos);
+                                   if (!category.getImage().isEmpty()) {
+                                       Glide.with(context).load(category.getImage()).placeholder(R.drawable.logo).into(premium_image);
+                                   }
+                                }
+                            }
+                            else {
+                                categories.add(category);
+                            }
+
                         }
                     }
                     categoriesAdapter.notifyDataSetChanged();
                 }
                 else {
-                    Services.showDialog(context, "Error",error.getLocalizedMessage());
+                    Services.showDialog(getContext(), "Error",error.getLocalizedMessage());
                 }
             }
         });
@@ -415,21 +543,32 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
 
     public void checkStripeSubscriptionStatus(String subscriptionId) {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://softment.in/Travler/stripe/vendor/retrieve_subscription.php",
+        final String TEST_URL = "https://softment.in/Travler/stripe/vendor/test/test_retrieve_subscription.php";
+        final String LIVE_URL = "https://softment.in/Travler/stripe/vendor/retrieve_subscription2.php";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, LIVE_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
-
 
                         try {
                             //JSONArray myJSON= new JSONArray(response);
 
                             JSONObject parentObject = new JSONObject(response);
-
                             UserModel.data.expireDate = new Date(Long.parseLong(parentObject.getString("current_period_end"))*1000);
+                            UserModel.data.subscription_status = parentObject.getString("status");
+                            String price_id = parentObject.getJSONObject("items").getJSONObject("data").getJSONObject("0").getJSONObject("price").getString("id");
 
-                            Log.d("WOWSOFTMENT",UserModel.data.expireDate.toString());
+                            if (price_id.equals("price_1L6hw5BweLNKx62PSEdLE8a7") || price_id.equals("price_1JhfweBweLNKx62PtWQAL8Te")) {
+                                Constants.membershipType = "normal";
+                            }
+                            else if (price_id.equals("price_1L6T92BweLNKx62PmsG3obCN")) {
+                                Constants.membershipType = "excite";
+                            }
+                            else if (price_id.equals("price_1L6TALBweLNKx62PH8sVyFS1")) {
+                                Constants.membershipType = "premium";
+                            }
+
                         } catch (JSONException e) {
                             // TODO Auto-generated catch block
                             ProgressHud.dialog.dismiss();
@@ -455,7 +594,7 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
 
         requestQueue.add(stringRequest);
     }
@@ -471,6 +610,7 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
             Purchase.PurchasesResult queryAlreadyPurchasesResult = billingClient.queryPurchases(SUBS);
             List<Purchase> alreadyPurchases = queryAlreadyPurchasesResult.getPurchasesList();
             if(alreadyPurchases!=null){
+               
                 handlePurchases(alreadyPurchases);
                 if (Constants.currentDate.compareTo(UserModel.data.getExpireDate()) > 0) {
                     Calendar c = Calendar.getInstance();
@@ -485,19 +625,19 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
         }
         //if Purchase canceled
         else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-            //Toast.makeText(context,"Purchase Canceled",Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getContext(),"Purchase Canceled",Toast.LENGTH_SHORT).show();
         }
         // Handle any other error msgs
         else {
-            Toast.makeText(context,"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"Error "+billingResult.getDebugMessage(),Toast.LENGTH_SHORT).show();
         }
     }
 
     private SharedPreferences getPreferenceObject() {
-        return context.getSharedPreferences(PREF_FILE, 0);
+        return getContext().getSharedPreferences(PREF_FILE, 0);
     }
     private SharedPreferences.Editor getPreferenceEditObject() {
-        SharedPreferences pref = context.getSharedPreferences(PREF_FILE, 0);
+        SharedPreferences pref = getContext().getSharedPreferences(PREF_FILE, 0);
         return pref.edit();
     }
     private boolean getSubscribeValueFromPref(){
@@ -511,12 +651,22 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
         for(Purchase purchase:purchases) {
             //if item is purchased
 
-            if (purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE) && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED)
+            if ((purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_NORMAL) || purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_EXCITE) || purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_PREMIUM) ) && purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED)
             {
+                if (purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_NORMAL)) {
+                    Constants.membershipType = "normal";
+                }
+                else if (purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_EXCITE)) {
+                    Constants.membershipType = "excite";
+                }
+                else if (purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_PREMIUM)) {
+                    Constants.membershipType = "premium";
+                }
+
                 if (!verifyValidSignature(purchase.getOriginalJson(), purchase.getSignature())) {
                     // Invalid purchase
                     // show error to user
-                    Toast.makeText(context, "Error : invalid Purchase", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Error : invalid Purchase", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 // else purchase is valid
@@ -541,25 +691,25 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                         Map<String , Object> map = new HashMap<>();
                         map.put("expireDate",c.getTime());
                         FirebaseFirestore.getInstance().collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).set(map, SetOptions.merge());
-                        Toast.makeText(context, "Item Purchased", Toast.LENGTH_SHORT).show();
-                        ((MainActivity)context).recreate();
+                        Toast.makeText(getContext(), "Item Purchased", Toast.LENGTH_SHORT).show();
+                        ((MainActivity)getContext()).recreate();
                     }
                 }
             }
             //if purchase is pending
-            else if(purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE) && purchase.getPurchaseState() == Purchase.PurchaseState.PENDING)
+            else if((purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_NORMAL) || purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_EXCITE) || purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_PREMIUM) ) && purchase.getPurchaseState() == Purchase.PurchaseState.PENDING)
             {
-                Toast.makeText(context,
+                Toast.makeText(getContext(),
                         "Purchase is Pending. Please complete Transaction", Toast.LENGTH_SHORT).show();
             }
             //if purchase is unknown mark false
-            else if(purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE) && purchase.getPurchaseState() == Purchase.PurchaseState.UNSPECIFIED_STATE)
+            else if((purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_NORMAL) || purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_EXCITE) || purchase.getSkus().contains(ITEM_SKU_SUBSCRIBE_PREMIUM) ) && purchase.getPurchaseState() == Purchase.PurchaseState.UNSPECIFIED_STATE)
             {
                 saveSubscribeValueToPref(false);
                // premiumContent.setVisibility(View.GONE);
                // subscribe.setVisibility(View.VISIBLE);
                // subscriptionStatus.setText("Subscription Status : Not Subscribed");
-                Toast.makeText(context, "Purchase Status Unknown", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Purchase Status Unknown", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -570,7 +720,7 @@ public class WorkoutFragment extends Fragment implements PurchasesUpdatedListene
                 //if purchase is acknowledged
                 // Grant entitlement to the user. and restart activity
                 saveSubscribeValueToPref(true);
-                ((MainActivity)context).recreate();
+                ((MainActivity)getContext()).recreate();
             }
         }
     };

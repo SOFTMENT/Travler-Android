@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import in.softment.travler.AllVideosViewController;
+import in.softment.travler.MainActivity;
 import in.softment.travler.Model.Category;
 import in.softment.travler.Model.Video;
 import in.softment.travler.PdfViewActivity;
@@ -52,14 +53,13 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
                @Override
                public void onClick(View view) {
                    if (category.type.equalsIgnoreCase("pdf")) {
-                       Intent intent = new Intent(context, PdfViewActivity.class);
-                       intent.putExtra("cat_id",category.id);
-                       context.startActivity(intent);
+                       ((MainActivity)context).gotoPdfActivity(category.id,category.isCatFree);
                    }
                    else {
                        Intent intent = new Intent(context, AllVideosViewController.class);
                        intent.putExtra("cat_id",category.id);
                        intent.putExtra("title",category.title);
+                       intent.putExtra("isCatFree",category.isCatFree);
                        context.startActivity(intent);
                    }
 

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DisclaimerActivity">
+
+    <ImageView
+        android:id="@+id/imageHead"
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="30dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/newone" />
+
+    <TextView
+        android:id="@+id/disclaimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageHead"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-12dp"
+        android:fontFamily="@font/rubik_medium"
+        android:text="DISCLAIMER"
+        android:textColor="@color/black"
+        android:textSize="24sp" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll"
+        android:layout_below="@id/disclaimer"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rubik_regular"
+            android:lineSpacingExtra="2dp"
+            android:text="As with all exercise programs, common sense is needed. To reduce risk and avoidance of injury, a full health check is advised by a medical practitioner before starting any program. By performing and using the workouts and mobility sessions from this program, you are performing them at your own risk. Travelr app, Jaimon McGeehan or any association will not be responsible or liable for any injury or harm sustained as a result of usage of the program, mobility, online fitness videos or information shared by the app or online. This includes emails, videos and text. The program targets a general population with a novice level of fitness and basic knowledge of movements. The difference between a novice and an advanced athlete would find with this program is results due to weights, intensity and diet. It aims to increase strength and conditioning through the use of bands, dumbbells, body weight movements and running. Individual results may vary due to weights used, experience, diet, and application. It is encouraged to work out with friends. Prehab, Rehab, recovery and rest are strongly advised throughout the program."
+            android:textAlignment="center" />
+    </androidx.core.widget.NestedScrollView>
+
+
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:textSize="13sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rubik_regular"
+            android:text="Click the tick to agree" />
+
+        <ImageView
+            android:id="@+id/done"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/groupdone" />
+    </LinearLayout>
+
+
+</RelativeLayout>

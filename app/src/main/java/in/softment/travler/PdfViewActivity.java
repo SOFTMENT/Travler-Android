@@ -2,8 +2,11 @@ package in.softment.travler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,6 +40,7 @@ import com.google.firebase.firestore.WriteBatch;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,13 +64,16 @@ public class PdfViewActivity extends AppCompatActivity {
     private String cat_id;
     private ImageView lastBtn, doneBtn;
     private RelativeLayout thirdView;
+    private LinearLayout stack1;
+    private TextView month1, month2, month3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf_view);
         cat_id = getIntent().getStringExtra("cat_id");
-
+        boolean isCatFree = getIntent().getBooleanExtra("isCatFree", false);
         ImageView lockBtn = findViewById(R.id.lock);
         doneBtn = findViewById(R.id.done);
         thirdView = findViewById(R.id.thirdView);
@@ -73,6 +81,13 @@ public class PdfViewActivity extends AppCompatActivity {
         number1 = findViewById(R.id.number1);
         number2 = findViewById(R.id.number2);
         number3 = findViewById(R.id.number3);
+
+        stack1 = findViewById(R.id.stack1);
+
+        month1 = findViewById(R.id.month1);
+        month2 = findViewById(R.id.month2);
+        month3 = findViewById(R.id.month3);
+
         imageView1 = findViewById(R.id.image1);
 
         findViewById(R.id.firstBtn).setOnClickListener(new View.OnClickListener() {
@@ -89,12 +104,32 @@ public class PdfViewActivity extends AppCompatActivity {
             }
         });
 
-        if (getSubscribeValueFromPref() || (UserModel.data.expireDate.compareTo(Constants.currentDate) > 0)){
+        if (getSubscribeValueFromPref() || (UserModel.data.expireDate.compareTo(Constants.currentDate) > 0 && UserModel.data.subscription_status.equalsIgnoreCase("active")) || isCatFree){
             hasMembership = true;
+
             lockBtn.setVisibility(View.GONE);
         }
         else {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            View view = getLayoutInflater().inflate(R.layout.error_message_layout, null);
+            TextView titleView = view.findViewById(R.id.title);
+            TextView msg = view.findViewById(R.id.message);
+            titleView.setText("Required Premium Membership");
+            msg.setText("Please purchase premium membership and unlock all contents.");
+            builder.setView(view);
+            AlertDialog alertDialog = builder.create();
+            view.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialog.dismiss();
+                    finish();
+                }
+            });
+            alertDialog.show();
             lockBtn.setVisibility(View.VISIBLE);
+
         }
 
 
@@ -154,17 +189,19 @@ public class PdfViewActivity extends AppCompatActivity {
         findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               lastBtnClicked();
-            }
-        });
-
-        findViewById(R.id.dumbell).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 Intent intent = new Intent(PdfViewActivity.this,AllVideosViewController.class);
                 intent.putExtra("cat_id","KZBFOnWEiklt48D9XjNs");
                 intent.putExtra("title","MOVEMENT LIBRARY");
                 startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.profile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                setResult(Activity.RESULT_OK, resultIntent);
+                finish();
             }
         });
 
@@ -180,17 +217,39 @@ public class PdfViewActivity extends AppCompatActivity {
         else {
             count = count - 1;
             if (count == 0) {
-                number1.setVisibility(View.GONE);
+
+                stack1.setVisibility(View.GONE);
                 imageView1.setVisibility(View.VISIBLE);
                 imageView1.setImageResource(R.drawable.group17);
+
+                number2.setText(Services.convertDateToDay(pdfs.get(0).getDate()));
+                month2.setText(Services.convertDateToMonth(pdfs.get(0).getDate()));
+
+                number3.setText(Services.convertDateToDay(pdfs.get(1).getDate()));
+                month3.setText(Services.convertDateToMonth(pdfs.get(1).getDate()));
+
+
+
             }
             else {
-                number1.setVisibility(View.VISIBLE);
+                stack1.setVisibility(View.VISIBLE);
+                number1.setText(Services.convertDateToDay(pdfs.get(count - 1).getDate()));
+                month1.setText(Services.convertDateToMonth(pdfs.get(count - 1).getDate()));
                 imageView1.setVisibility(View.GONE);
 
-                number1.setText((count+0)+"");
-                number2.setText((count+1)+"");
-                number3.setText((count+2)+"");
+
+                number2.setText(Services.convertDateToDay(pdfs.get(count).getDate()));
+                month2.setText(Services.convertDateToMonth(pdfs.get(count).getDate()));
+
+                try {
+                    number3.setText(Services.convertDateToDay(pdfs.get(count + 1).getDate()));
+                    month3.setText(Services.convertDateToMonth(pdfs.get(count + 1).getDate()));
+                }
+                catch (Exception ignored) {
+
+                }
+
+
             }
             loadPdf();
         }
@@ -202,12 +261,15 @@ public class PdfViewActivity extends AppCompatActivity {
 
     public void lastBtnClicked(){
         if (hasMembership) {
-            number1.setVisibility(View.VISIBLE);
-            imageView1.setVisibility(View.GONE);
 
-            number1.setText(""+(count+1));
-            number2.setText(""+(count+2));
-            number3.setText(""+(count+3));
+            stack1.setVisibility(View.VISIBLE);
+            imageView1.setVisibility(View.GONE);
+            number1.setText(Services.convertDateToDay(pdfs.get(count).getDate()));
+            month1.setText(Services.convertDateToMonth(pdfs.get(count).getDate()));
+
+
+            number2.setText(Services.convertDateToDay(pdfs.get(count + 1).getDate()));
+            month2.setText(Services.convertDateToMonth(pdfs.get(count + 1).getDate()));
 
             count = count + 1;
 
@@ -216,6 +278,10 @@ public class PdfViewActivity extends AppCompatActivity {
                 doneBtn.setVisibility(View.GONE);
             }
             else {
+
+                number3.setText(Services.convertDateToDay(pdfs.get(count + 1).getDate()));
+                month3.setText(Services.convertDateToMonth(pdfs.get(count + 1).getDate()));
+
                 thirdView.setVisibility(View.VISIBLE);
                 doneBtn.setVisibility(View.VISIBLE);
             }
@@ -234,6 +300,7 @@ public class PdfViewActivity extends AppCompatActivity {
         return getSharedPreferences(PREF_FILE, 0);
     }
     public void loadPdf(){
+
         if (count <= (pdfs.size() - 1)) {
             WriteBatch writeBatch =  FirebaseFirestore.getInstance().batch();
             DocumentReference documentReference = FirebaseFirestore.getInstance().collection("Users").document(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -242,13 +309,15 @@ public class PdfViewActivity extends AppCompatActivity {
                 map.put("count", FieldValue.increment(1));
                 writeBatch.set(documentReference.collection("WatchedCount").document(cat_id),map, SetOptions.merge());
                 Map<String, String> map1 = new HashMap();
-                map1.put("videoId", pdfs.get(0).id);
-                writeBatch.set(documentReference.collection("Watched").document(pdfs.get(0).id),map1);
+                map1.put("videoId", pdfs.get(count).id);
+                writeBatch.set(documentReference.collection("Watched").document(pdfs.get(count).id),map1);
 
 
             try {
-                String url= URLEncoder.encode(pdfs.get(0).pdfLink,"UTF-8");
-                myWebView.loadUrl("http://drive.google.com/viewerng/viewer?embedded=true&url="+url);
+
+                String url= URLEncoder.encode(pdfs.get(count).pdfLink,"UTF-8");
+                myWebView.loadUrl("https://docs.google.com/gview?embedded=true&url="+url);
+
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -273,9 +342,24 @@ public class PdfViewActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (pdfs.size()>0){
-                            loadPdf();
+                        int  Mindex = 0;
+
+                        for (int i = 0; i< pdfs.size(); i++) {
+                            if (Services.convertDateToDay(pdfs.get(i).getDate()).equals(Services.convertDateToDay(new Date()))
+                            && Services.convertDateToMonth(pdfs.get(i).getDate()).equals(Services.convertDateToMonth(new Date()))
+                            ) {
+                                Mindex = i;
+                                break;
+                            }
                         }
+
+                        count = Mindex + 1;
+
+                        Map<String, String> map = new HashMap<>();
+                        map.put("cat_id",cat_id);
+                        map.put("Location","GetPDF Function");
+                        FirebaseFirestore.getInstance().collection("ERROR").document().set(map);
+                        firstBtnClicked();
 
                     }
                 }

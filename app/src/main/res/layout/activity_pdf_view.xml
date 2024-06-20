@@ -27,30 +27,47 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:src="@drawable/group16" />
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="24dp"
+                android:src="@drawable/group17" />
+
             <LinearLayout
+               android:id="@+id/stack1"
+                android:visibility="gone"
+                android:gravity="center"
+                android:orientation="vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="24dp"
+                android:layout_marginBottom="20dp"
                 >
-                <ImageView
 
-                    android:id="@+id/image1"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:src="@drawable/group17"
-                    />
-                <TextView
-                    android:id="@+id/number1"
-                    android:visibility="gone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/rubik_medium"
-                    android:textSize="24sp"
-                    android:textColor="@color/black"
-                    android:text="1"
-                    />
+                   <TextView
+                       android:id="@+id/number1"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:fontFamily="@font/rubik_medium"
+                       android:textSize="17sp"
+                       android:textColor="@color/black"
+                       android:text="1"
+                       />
+                   <TextView
+                       android:id="@+id/month1"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:fontFamily="@font/rubik_medium"
+                       android:textSize="17sp"
+                       android:textColor="@color/black"
+                       android:text="Dec"
+                       />
+
             </LinearLayout>
 
         </RelativeLayout>
@@ -68,28 +85,41 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/group16" />
+
             <LinearLayout
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="34dp"
-                >
+                android:layout_marginTop="26dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/number2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/rubik_medium"
-                    android:textSize="24sp"
-                    android:textColor="@color/black"
                     android:text="1"
-                    />
+                    android:textColor="@color/black"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/month2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_medium"
+                    android:text="Dec"
+                    android:textColor="@color/black"
+                    android:textSize="17sp" />
+
             </LinearLayout>
 
         </RelativeLayout>
 
 
         <RelativeLayout
+
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -104,23 +134,35 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="8dp"
                 android:src="@drawable/group16" />
+
             <LinearLayout
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="24dp"
-                >
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/number3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/rubik_medium"
-                    android:textSize="24sp"
+                    android:text="1"
                     android:textColor="@color/black"
-                    android:text="2"
-                    />
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/month3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_medium"
+                    android:text="Dec"
+                    android:textColor="@color/black"
+                    android:textSize="17sp" />
+
             </LinearLayout>
 
             <ImageView
@@ -175,7 +217,7 @@
     <LinearLayout
         android:id="@+id/llBottom"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="100dp"
         android:orientation="horizontal"
         android:weightSum="3"
        android:layout_alignParentBottom="true"
@@ -188,12 +230,12 @@
 
             <ImageView
                 android:id="@+id/home"
-                android:layout_width="64dp"
-                android:layout_height="72dp"
+                android:layout_width="36dp"
+                android:layout_height="32dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="16dp"
-                android:src="@drawable/grouphome" />
+                android:src="@drawable/home3" />
 
         </RelativeLayout>
 
@@ -205,8 +247,8 @@
 
             <ImageView
                 android:id="@+id/done"
-                android:layout_width="74dp"
-                android:layout_height="74dp"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/groupdone" />
@@ -222,13 +264,13 @@
             >
 
             <ImageView
-                android:id="@+id/dumbell"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:id="@+id/profile"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="16dp"
-                android:src="@drawable/grouplib" />
+                android:src="@drawable/menu" />
 
 
         </RelativeLayout>

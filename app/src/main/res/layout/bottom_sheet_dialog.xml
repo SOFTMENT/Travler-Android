@@ -60,7 +60,6 @@
             android:backgroundTint="#9B8EF2">
 
             <ImageView
-
                 android:id="@+id/img"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -101,20 +100,42 @@
         android:textSize="13sp"
         />
 
+    <LinearLayout
+        android:gravity="center"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
     <TextView
+
+        android:textAlignment="center"
         android:id="@+id/accountType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
         android:fontFamily="@font/rubik_regular"
         android:text="Free"
         android:textColor="@color/dark_gray"
         android:textSize="13sp" />
+        <TextView
+            android:visibility="gone"
+            android:layout_marginTop="3dp"
+            android:id="@+id/unsubscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/rubik_regular"
+            android:text="UNSUBSCRIBE"
+            android:textColor="#f00"
+            android:textSize="12sp" />
+
+
+    </LinearLayout>
 
 
 
 </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/shareApp"

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/redback"
+    android:layout_alignParentEnd="true"
+    android:gravity="end">
+
+        <TextView
+            android:maxWidth="300dp"
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello Vijay... I am fine"
+            android:textColor="#595959"
+            android:paddingTop="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:textSize="14sp"
+            android:fontFamily="@font/rubik_regular"
+            />
+
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/imagerr"
+            android:layout_width="280dp"
+            android:layout_height="300dp"
+                >
+                <ImageView
+                    android:scaleType="centerCrop"
+                    android:id="@+id/imagemessage"
+                    android:layout_margin="2dp"
+                    android:layout_width="280dp"
+                    android:layout_height="300dp"
+                    android:layout_alignParentEnd="true"
+
+                    />
+
+        </RelativeLayout>
+        <TextView
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_gravity="end"
+            android:maxWidth="300dp"
+            android:visibility="visible"
+            android:id="@+id/dateandtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="17-NOV-2020, 02:20 PM"
+            android:textColor="#9F9F9F"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/rubik_regular"
+            />
+</LinearLayout>
+</RelativeLayout>

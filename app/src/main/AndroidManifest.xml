@@ -15,6 +15,12 @@
         android:theme="@style/Theme.Travler"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ShowChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DisclaimerActivity"
+            android:exported="false" />
+        <activity
             android:name=".PdfViewActivity"
             android:exported="false" />
         <activity
@@ -22,7 +28,7 @@
             android:exported="false" />
         <activity
             android:name=".OpenPdfActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".AllVideosViewController"
             android:exported="false" />
@@ -45,7 +51,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

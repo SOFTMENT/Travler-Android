@@ -43,7 +43,8 @@ public class AllVideosViewController extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         String cat_id = getIntent().getStringExtra("cat_id");
         String title = getIntent().getStringExtra("title");
-        if (getSubscribeValueFromPref() || (UserModel.data.expireDate.compareTo(Constants.currentDate) > 0)){
+        boolean isCatFree = getIntent().getBooleanExtra("isCatFree",false);
+        if (getSubscribeValueFromPref() || (UserModel.data.expireDate.compareTo(Constants.currentDate) > 0 && UserModel.data.subscription_status.equalsIgnoreCase("active")) || isCatFree){
             hasMembership = true;
         }
         TextView headTitle = findViewById(R.id.title);
@@ -72,7 +73,7 @@ public class AllVideosViewController extends AppCompatActivity {
 
     public void getVideos(String cat_id){
         ProgressHud.show(this,"Loading...");
-        FirebaseFirestore.getInstance().collection("Categories").document(cat_id).collection("Videos").orderBy("date").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        FirebaseFirestore.getInstance().collection("Categories").document(cat_id).collection("Videos").orderBy("title").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                     ProgressHud.dialog.dismiss();
@@ -82,7 +83,7 @@ public class AllVideosViewController extends AppCompatActivity {
                            for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
                                Video video = documentSnapshot.toObject(Video.class);
                                videos.add(video);
-                               Log.d("SOFTMENTVIJAY",video.id);
+
                            }
                         }
                         allVideosAdapter.notifyDataSetChanged();

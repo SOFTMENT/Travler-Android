@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="2dp"
+        android:src="@drawable/logo"
+        app:civ_border_color="#FF000000" />
+
+    <LinearLayout
+        android:layout_marginStart="4dp"
+        android:visibility="visible"
+        android:layout_toEndOf="@+id/profile_image"
+        android:orientation="vertical"
+        android:background="@drawable/appcolorback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vijay Rathore"
+            android:textColor="#F44336"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="8dp"
+            android:textSize="15sp"
+            android:fontFamily="@font/rubik_regular"
+            />
+        <TextView
+
+            android:visibility="gone"
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello !!"
+            android:textColor="#595959"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:textSize="14sp"
+            android:fontFamily="@font/rubik_regular"
+            />
+        <RelativeLayout
+            android:id="@+id/imagerr"
+            android:layout_width="280dp"
+            android:layout_height="300dp">
+
+            <ImageView
+                android:id="@+id/imagemessage"
+                android:layout_width="280dp"
+                android:layout_height="300dp"
+                android:scaleType="centerCrop"
+
+                />
+
+        </RelativeLayout>
+        <TextView
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+
+            android:maxWidth="300dp"
+            android:visibility="visible"
+            android:id="@+id/dateandtime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="17-NOV-2020, 02:20 PM"
+            android:textColor="#9F9F9F"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/rubik_regular"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

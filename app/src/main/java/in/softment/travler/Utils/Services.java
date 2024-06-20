@@ -45,6 +45,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import in.softment.travler.DisclaimerActivity;
 import in.softment.travler.MainActivity;
 import in.softment.travler.Model.UserModel;
 import in.softment.travler.R;
@@ -295,6 +296,25 @@ public class Services {
         return  df.format(date);
     }
 
+    public static  String convertDateToDay(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        date.setTime(date.getTime());
+        String pattern = "dd";
+        DateFormat df = new SimpleDateFormat(pattern, Locale.getDefault());
+        return  df.format(date);
+    }
+    public static  String convertDateToMonth(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        date.setTime(date.getTime());
+        String pattern = "MMM";
+        DateFormat df = new SimpleDateFormat(pattern, Locale.getDefault());
+        return  df.format(date);
+    }
+
     public static  String convertDateToTimeString(Date date) {
         if (date == null) {
             date = new Date();
@@ -312,10 +332,17 @@ public class Services {
     }
 
     public static void logout(Context context) {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(context, SignInActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(intent);
+        try {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(context, SignInActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(intent);
+        }
+        catch (Exception ignored) {
+
+        }
+
+
     }
 
 
@@ -438,10 +465,19 @@ public class Services {
                         documentSnapshot.toObject(UserModel.class);
 
                         if (UserModel.data != null) {
-                                Intent intent = null;
-                                intent = new Intent(context, MainActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                context.startActivity(intent);
+                                if (UserModel.data.isDiscAccepted()) {
+                                    Intent intent = null;
+                                    intent = new Intent(context, MainActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    context.startActivity(intent);
+                                }
+                                else {
+                                    Intent intent = null;
+                                    intent = new Intent(context, DisclaimerActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    context.startActivity(intent);
+                                }
+
 
                         }
                         else  {

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,14 +35,16 @@ public class NotificationsFragment extends Fragment {
     private RecyclerView recyclerView;
     private NotificationAdapter notificationAdapter;
     private ArrayList<NotificationModel> notificationModels;
+    private TextView no_notifications_available;
     public NotificationsFragment(Context context) {
         this.context = context;
     }
 
+
+
     public NotificationsFragment(){
 
     }
-
 
 
     @Override
@@ -56,9 +59,11 @@ public class NotificationsFragment extends Fragment {
         notificationModels = new ArrayList<>();
         notificationAdapter = new NotificationAdapter(context,notificationModels);
         recyclerView.setAdapter(notificationAdapter);
+        no_notifications_available = view.findViewById(R.id.no_notifications_available);
         getNotifications();
         return view;
     }
+
 
     private void getNotifications() {
         FirebaseFirestore.getInstance().collection("Notifications").orderBy("notificationTime",
@@ -75,6 +80,12 @@ public class NotificationsFragment extends Fragment {
                             notificationModels.add(notificationModel);
 
                         }
+                    }
+                    if (notificationModels.size() > 0) {
+                        no_notifications_available.setVisibility(View.GONE);
+                    }
+                    else {
+                        no_notifications_available.setVisibility(View.VISIBLE);
                     }
                     notificationAdapter.notifyDataSetChanged();
                 }

@@ -26,6 +26,7 @@ import in.softment.travler.BuildConfig;
 import in.softment.travler.MainActivity;
 import in.softment.travler.Model.UserModel;
 import in.softment.travler.R;
+import in.softment.travler.ShowChatActivity;
 import in.softment.travler.Utils.Services;
 
 
@@ -71,6 +72,14 @@ public class ProfileFragment extends Fragment {
 
                 builder.setCancelable(false);
                 builder.show();
+            }
+        });
+
+        //ChatRoom
+        view.findViewById(R.id.chatRoom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, ShowChatActivity.class));
             }
         });
 
@@ -147,7 +156,7 @@ public class ProfileFragment extends Fragment {
         //Version
         TextView version = view.findViewById(R.id.versionCode);
         try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(context.getPackageName(), 0);
             String versionName = pInfo.versionName;
             version.setText(versionName);
         } catch (PackageManager.NameNotFoundException e) {

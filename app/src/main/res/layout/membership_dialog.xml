@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/membershipSheet"
     android:layout_height="match_parent">
@@ -14,53 +15,223 @@
         android:layout_gravity="center_horizontal"
         />
 
-    <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="24dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/crown_yellow"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Your Plan"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:textColor="#343434"
+        android:fontFamily="@font/rubik_medium"
+        android:textSize="15sp"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:text="Upgrade To Premium"
-        android:fontFamily="@font/rubik_bold"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        />
-    <TextView
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
-        android:text="Access to all training categories content."
-        android:fontFamily="@font/rubik_medium"
-        android:textSize="13sp"
-        android:textColor="@color/gray"
-        />
-    <androidx.appcompat.widget.AppCompatButton
+    <androidx.cardview.widget.CardView
+        android:id="@+id/normal_card"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:textSize="13sp"
+            android:id="@+id/normal_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/rubik_medium"
+            android:text="AUS NORMAL"
+            android:textColor="#888" />
+
+        <CheckBox
+            android:id="@+id/normal_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            />
+
+        <TextView
+            android:id="@+id/normal_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/normal_label"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/rubik_medium"
+            android:text="$10 / month"
+            android:textColor="#343434"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/normal_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/normal_price"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/rubik_regular"
+            android:text="You will get access on all our platforms. Explore and watch video and access workout pdf on your phone tablet."
+            android:textColor="#888"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/excite_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:textSize="13sp"
+                android:id="@+id/excite_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/rubik_medium"
+                android:text="AUS EXCITE"
+                android:textColor="#888" />
+
+            <CheckBox
+                android:id="@+id/excite_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/excite_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/excite_label"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/rubik_medium"
+                android:text="$35 / month"
+                android:textColor="#343434"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/excite_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/excite_price"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/rubik_regular"
+                android:text="Get full access of aus normal + Trainer will encourage you as well as help you via phone, message or email."
+                android:textColor="#888"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/premium_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <TextView
+                android:textSize="13sp"
+                android:id="@+id/premium_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/rubik_medium"
+                android:text="AUS PREMIUM"
+                android:textColor="#888" />
+
+            <CheckBox
+                android:id="@+id/premium_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/premium_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/premium_label"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/rubik_medium"
+                android:text="$70 / month"
+                android:textColor="#343434"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/premium_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/premium_price"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/rubik_regular"
+                android:text="Get full access of aus normal and aus excite + Get access of personalized workouts. Personalized workout category will show on app after subscription."
+                android:textColor="#888"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_gravity="center_horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:textAllCaps="false"
         android:fontFamily="@font/rubik_medium"
         android:textColor="@color/white"
         android:background="@drawable/corner_radius_4"
         android:backgroundTint="@color/red_main"
-        android:text="A$ 10.0 / Month"
+        android:text="Continue to Checkout"
         android:id="@+id/payBtn"
         />
     <TextView
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
